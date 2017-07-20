@@ -14,7 +14,8 @@ var utils = require('utils');
 var defaults = {
   persistent: false,
   repeat: false,
-  placeholder: ' '
+  placeholder: ' ',
+  allowOverflow: false
 };
 
 // Regexs for input validation
@@ -311,7 +312,9 @@ Formatter.prototype._formatValue = function (ignoreCaret) {
   this._addChars();
 
   // Set value and adhere to maxLength
-  this.el.value = this.val.substr(0, this.mLength);
+  this.el.value = (!this.opts.allowOverflow)
+    ? this.val.substr(0, this.mLength)
+    : this.val;
 
   // Set new caret position
   if ((typeof ignoreCaret) === 'undefined' || ignoreCaret === false) {
@@ -328,7 +331,7 @@ Formatter.prototype._removeChars = function () {
   if (this.sel.end > this.focus) {
     this.delta += this.sel.end - this.focus;
   }
-  
+
   // Account for shifts during removal
   var shift = 0;
 
